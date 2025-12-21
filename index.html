@@ -11,6 +11,9 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -41,13 +44,41 @@
             .no-print { display: none !important; }
             .print-break-inside { page-break-inside: avoid; }
         }
-
-        /* Checkbox Transitions */
-        .checklist-item { transition: all 0.2s ease; cursor: pointer; }
-        .checklist-box { transition: all 0.2s ease; }
         
         /* Logo sizing */
         .logo-img { max-height: 80px; width: auto; object-fit: contain; }
+        
+        /* Chart containers */
+        canvas { max-height: 400px; }
+        
+        /* Master table responsive styling */
+        #masterDataTable {
+            font-size: 0.75rem; /* 12px for compact fit */
+        }
+        
+        #masterDataTable th {
+            white-space: normal;
+            word-wrap: break-word;
+        }
+        
+        #masterDataTable td {
+            white-space: normal;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+        
+        #masterDataTable td:first-child {
+            font-weight: 600;
+        }
+        
+        /* Mobile accordion styling */
+        #masterDataMobile button {
+            transition: all 0.2s ease;
+        }
+        
+        #masterDataMobile [data-lucide] {
+            transition: transform 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-900 h-screen overflow-hidden flex">
@@ -67,7 +98,7 @@
             <div class="relative">
                 <select id="role-selector" onchange="updateRole()" class="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
                     <option value="All">All Roles</option>
-                    <option value="SCC">SCC Member</option>
+                    <option value="S2C2">S2C2 Member</option>
                     <option value="Faculty">Faculty Incharge</option>
                     <option value="Students">Student</option>
                     <option value="Academic Dept">Academic Dept</option>
@@ -121,9 +152,6 @@
                     >
                 </div>
                 <div class="h-6 w-px bg-gray-300 mx-2 hidden sm:block"></div>
-                <button onclick="window.print()" class="text-gray-500 hover:text-red-700 p-2 rounded-full hover:bg-gray-100 transition-colors" title="Print">
-                    <i data-lucide="printer" class="w-5 h-5"></i>
-                </button>
                 <!-- Changed Export button to Black/Red hover -->
                 <button onclick="exportToText()" class="bg-black hover:bg-red-800 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center shadow-sm transition-colors hidden sm:flex">
                     <i data-lucide="download" class="w-4 h-4 mr-2"></i> Export
@@ -133,14 +161,14 @@
 
         <!-- Document Canvas -->
         <main id="document-canvas" class="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-8 relative">
-            <div class="max-w-4xl mx-auto bg-white shadow-lg min-h-screen rounded-lg pb-12 border-t-4 border-red-800">
+            <div class="max-w-6xl mx-auto bg-white shadow-lg min-h-screen rounded-lg pb-12 border-t-4 border-red-800">
                 
                 <!-- Doc Header with Logos -->
                 <div class="px-8 md:px-12 py-8 border-b border-gray-200">
                     <!-- Logos Row -->
                     <div class="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
-                        <img src="1.png" alt="SIOM Logo" class="logo-img h-16 md:h-20" onerror="this.src='https://via.placeholder.com/150x80?text=SIOM+Logo'">
-                        <img src="S2C2 Logo.png" alt="SCC Logo" class="logo-img h-14 md:h-16" onerror="this.src='https://via.placeholder.com/100x80?text=SCC+Logo'">
+                        <img src="1.jpg" alt="SIOM Logo" class="logo-img h-16 md:h-20" onerror="this.src='https://via.placeholder.com/150x80?text=SIOM+Logo'">
+                        <img src="S2C2 Logo.png" alt="S2C2 Logo" class="logo-img h-14 md:h-16" onerror="this.src='https://via.placeholder.com/100x80?text=S2C2+Logo'">
                     </div>
 
                     <div class="flex justify-between items-start mb-6">
@@ -150,7 +178,7 @@
                         </div>
                         <div class="text-right hidden sm:block">
                             <div class="font-bold text-gray-900">SIOM Nashik</div>
-                            <div class="text-sm text-gray-500">Students' Consulting Committee</div>
+                            <div class="text-sm text-gray-500">SIOM Students' Consulting Committee</div>
                         </div>
                     </div>
                     
@@ -167,8 +195,18 @@
 
             </div>
             
-            <div class="max-w-4xl mx-auto mt-6 text-center text-gray-400 text-sm no-print mb-8">
-                <p>© 2025 Symbiosis Institute of Operations Management. Confidential Internal Document.</p>
+            <div class="max-w-6xl mx-auto mt-6 text-center text-gray-400 text-sm no-print mb-8">
+                <p class="mb-3">© 2025 Symbiosis Institute of Operations Management. Confidential Internal Document.</p>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 text-xs">
+                    <div class="flex items-center">
+                        <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
+                        <span>S2C2 Email: <a href="mailto:consultingprojects@siom.in" class="text-red-600 hover:text-red-700 hover:underline">consultingprojects@siom.in</a></span>
+                    </div>
+                    <div class="flex items-center">
+                        <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
+                        <span>Faculty Coordinator: <a href="mailto:deepak.nirmal@siom.in" class="text-red-600 hover:text-red-700 hover:underline">deepak.nirmal@siom.in</a></span>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -186,7 +224,7 @@
                     <div class="space-y-4">
                         <div class="bg-gray-50 border-l-4 border-red-800 p-4 mb-4">
                             <h3 class="font-bold text-red-900">Document Control</h3>
-                            <p class="text-sm text-gray-700">Version 2.1 | Last Updated: December 2025 | Owner: Students' Consulting Committee</p>
+                            <p class="text-sm text-gray-700">Version 2.1 | Last Updated: December 2025 | Owner: SIOM Students' Consulting Committee</p>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900">1.1 What are Live Projects?</h3>
                         <p class="text-gray-700 leading-relaxed">
@@ -195,13 +233,61 @@
                         <p class="text-gray-700 leading-relaxed mt-2">
                             These projects provide hands-on experience by applying classroom theory to real-world business challenges. Students often work on domains such as:
                         </p>
-                        <ul class="list-disc pl-5 mt-2 space-y-1 text-gray-700 bg-red-50 p-4 rounded-md border border-red-100">
-                            <li><strong>Warehouse Optimisation</strong></li>
-                            <li><strong>Demand Forecasting</strong></li>
-                            <li><strong>Logistics Route Planning</strong></li>
-                            <li><strong>Inventory Management</strong> (ABC analysis, Safety Stock)</li>
-                            <li><strong>Sustainability Tracking</strong></li>
-                        </ul>
+                        <div class="mt-4 bg-gradient-to-br from-red-50 to-gray-50 p-5 rounded-lg border border-red-100 shadow-sm">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Warehouse Optimisation
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Demand Forecasting
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Logistics Route Planning
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Inventory Management
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Sustainability Tracking
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    SOP & Chart Development
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    MIS Dashboard Creation
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    RCA (Root Cause Analysis)
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Process Optimization
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Plant & Process Layout
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Value Stream Mapping
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Inventory & Process Dashboards
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    IATF Documentation
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Packaging Automation
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Capacity Dashboard Projects
+                                </div>
+                                <div class="bg-white border border-red-200 rounded-md px-3 py-2 text-xs font-medium text-gray-700 hover:bg-red-50 hover:border-red-300 transition-all shadow-sm">
+                                    Stock Handover Analysis
+                                </div>
+                                <div class="bg-gradient-to-r from-red-100 to-red-50 border-2 border-red-300 rounded-md px-3 py-2 text-xs font-semibold text-red-800 italic col-span-2 sm:col-span-3 md:col-span-4 text-center">
+                                    and so on...
+                                </div>
+                            </div>
+                        </div>
                         <p class="text-gray-700 leading-relaxed mt-2">
                             Projects frequently utilize technologies like <strong>Power BI, AI, or ERP systems</strong> to improve efficiency, reduce costs, and manage risks across industries ranging from manufacturing to retail.
                         </p>
@@ -211,7 +297,7 @@
             {
                 id: '2',
                 title: '2. Definitions & Backgrounds',
-                roles: ['SCC', 'Faculty'],
+                roles: ['S2C2', 'Faculty'],
                 content: `
                     <div class="space-y-4">
                         <h3 class="text-xl font-bold text-gray-900">2.1 Student Profiles</h3>
@@ -291,7 +377,7 @@
             {
                 id: '4',
                 title: '4. Phase 1: Company Scouting',
-                roles: ['SCC', 'Faculty'],
+                roles: ['S2C2', 'Faculty'],
                 content: `
                     <div class="space-y-4">
                         <div class="flex items-center space-x-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
@@ -305,11 +391,11 @@
                             <h4 class="font-bold border-b border-gray-200 pb-2 mb-2 flex items-center text-gray-900">
                                 <i data-lucide="check-square" class="mr-2 text-red-600 w-5 h-5"></i> Phase 1 Checklist
                             </h4>
-                            <ul class="space-y-2 checklist-container">
-                                <li data-task="p1-t1">Scout companies in Nashik region</li>
-                                <li data-task="p1-t2">Send <strong>Blank Project Charter</strong> to interested companies</li>
-                                <li data-task="p1-t3">Company fills Charter OR SCC fills and Company confirms via mail</li>
-                                <li data-task="p1-t4">Receive final "Thumbs Up" / Confirmation from Company</li>
+                            <ul class="space-y-2 list-disc pl-5">
+                                <li>Scout companies in Nashik region</li>
+                                <li>Send <strong>Blank Project Charter</strong> to interested companies</li>
+                                <li>Company fills Charter OR S2C2 fills and Company confirms via mail</li>
+                                <li>Receive final "Thumbs Up" / Confirmation from Company</li>
                             </ul>
                         </div>
                     </div>
@@ -318,7 +404,7 @@
             {
                 id: '5',
                 title: '5. Phase 2: Student Registration',
-                roles: ['SCC', 'Students'],
+                roles: ['S2C2', 'Students'],
                 content: `
                     <div class="space-y-4">
                         <div class="flex items-center space-x-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
@@ -326,26 +412,16 @@
                             <span>Duration: Week 3</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900">5.1 Objective</h3>
-                        <p class="text-gray-700">Float forms to collect student willingness/keenness. Stop accepting responses once the required cap is reached.</p>
-
-                         <div class="bg-red-50 border-l-4 border-red-600 p-4 my-4">
-                            <h4 class="font-bold text-red-900 flex items-center">
-                                <i data-lucide="alert-circle" class="mr-2 w-5 h-5"></i> Process Rule
-                            </h4>
-                            <p class="text-sm text-red-800 mt-1">
-                                Forms are floated at the beginning. Once the cap for the number of students to be placed (Max 3-4 per project) is reached or exceeded by a safe margin, stop floating forms.
-                            </p>
-                        </div>
+                        <p class="text-gray-700">Float forms to collect student willingness/keenness.</p>
 
                         <div class="bg-white border border-gray-200 rounded-lg p-4 mt-4 shadow-sm print-break-inside">
                            <h4 class="font-bold border-b border-gray-200 pb-2 mb-2 flex items-center text-gray-900">
                                 <i data-lucide="check-square" class="mr-2 text-red-600 w-5 h-5"></i> Phase 2 Checklist
                            </h4>
-                           <ul class="space-y-2 checklist-container">
-                                <li data-task="p2-t1">Float Interest/Willingness Form to students</li>
-                                <li data-task="p2-t2">Monitor response count against project capacity</li>
-                                <li data-task="p2-t3">Stop accepting responses/Close form</li>
-                                <li data-task="p2-t4">Compile list of interested candidates</li>
+                           <ul class="space-y-2 list-disc pl-5">
+                                <li>Float Interest/Willingness Form to students</li>
+                                <li>Monitor response count against project capacity</li>
+                                <li>Compile list of interested candidates</li>
                            </ul>
                         </div>
                     </div>
@@ -354,7 +430,7 @@
             {
                 id: '6',
                 title: '6. Phase 3: Interviews',
-                roles: ['Faculty', 'SCC'],
+                roles: ['Faculty', 'S2C2'],
                 content: `
                     <div class="space-y-4">
                         <div class="flex items-center space-x-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
@@ -370,11 +446,11 @@
                            <h4 class="font-bold border-b border-gray-200 pb-2 mb-2 flex items-center text-gray-900">
                                 <i data-lucide="check-square" class="mr-2 text-red-600 w-5 h-5"></i> Phase 3 Checklist
                            </h4>
-                           <ul class="space-y-2 checklist-container">
-                                <li data-task="p3-t1">Schedule General Interview with SIOM Faculty</li>
-                                <li data-task="p3-t2">Notify interested students of schedule</li>
-                                <li data-task="p3-t3">Conduct interviews</li>
-                                <li data-task="p3-t4">Compile interview scores/clearance status</li>
+                           <ul class="space-y-2 list-disc pl-5">
+                                <li>Schedule General Interview with SIOM Faculty</li>
+                                <li>Notify interested students of schedule</li>
+                                <li>Conduct interviews</li>
+                                <li>Compile interview scores/clearance status</li>
                            </ul>
                         </div>
                     </div>
@@ -383,7 +459,7 @@
             {
                 id: '7',
                 title: '7. Phase 4: Selection & Ranking',
-                roles: ['SCC', 'Faculty'],
+                roles: ['S2C2', 'Faculty'],
                 content: `
                     <div class="space-y-4">
                         <div class="flex items-center space-x-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
@@ -413,11 +489,11 @@
                            <h4 class="font-bold border-b border-gray-200 pb-2 mb-2 flex items-center text-gray-900">
                                 <i data-lucide="check-square" class="mr-2 text-red-600 w-5 h-5"></i> Phase 4 Checklist
                            </h4>
-                           <ul class="space-y-2 checklist-container">
-                                <li data-task="p4-t1">Sort students by Marks</li>
-                                <li data-task="p4-t2">Segregate by Profile (Fresher/Core/Non-Core)</li>
-                                <li data-task="p4-t3">Apply "Equal Distribution" logic</li>
-                                <li data-task="p4-t4">Finalize Top 50-55 list</li>
+                           <ul class="space-y-2 list-disc pl-5">
+                                <li>Sort students by Marks</li>
+                                <li>Segregate by Profile (Fresher/Core/Non-Core)</li>
+                                <li>Apply "Equal Distribution" logic</li>
+                                <li>Finalize Top 50-55 list</li>
                            </ul>
                         </div>
                     </div>
@@ -426,7 +502,7 @@
             {
                 id: '8',
                 title: '8. Phase 5: Project Assignment',
-                roles: ['SCC', 'Faculty', 'Students'],
+                roles: ['S2C2', 'Faculty', 'Students'],
                 content: `
                     <div class="space-y-4">
                          <div class="flex items-center space-x-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
@@ -441,10 +517,10 @@
                            <h4 class="font-bold border-b border-gray-200 pb-2 mb-2 flex items-center text-gray-900">
                                 <i data-lucide="check-square" class="mr-2 text-red-600 w-5 h-5"></i> Phase 5 Checklist
                            </h4>
-                           <ul class="space-y-2 checklist-container">
-                                <li data-task="p5-t1">Map selected students to Company Projects</li>
-                                <li data-task="p5-t2">Ensure team composition meets company needs</li>
-                                <li data-task="p5-t3">Verify assignments against capacity (max 3-4 per project)</li>
+                           <ul class="space-y-2 list-disc pl-5">
+                                <li>Map selected students to Company Projects</li>
+                                <li>Ensure team composition meets company needs</li>
+                                <li>Verify assignments against capacity (max 3-4 per project)</li>
                            </ul>
                         </div>
                     </div>
@@ -453,7 +529,7 @@
             {
                 id: '9',
                 title: '9. Phase 6: Handover',
-                roles: ['SCC', 'Faculty', 'Academic Dept'],
+                roles: ['S2C2', 'Faculty', 'Academic Dept'],
                 content: `
                     <div class="space-y-4">
                          <div class="flex items-center space-x-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
@@ -467,10 +543,10 @@
                            <h4 class="font-bold border-b border-gray-200 pb-2 mb-2 flex items-center text-gray-900">
                                 <i data-lucide="check-square" class="mr-2 text-red-600 w-5 h-5"></i> Phase 6 Checklist
                            </h4>
-                           <ul class="space-y-2 checklist-container">
-                                <li data-task="p6-t1">Compile Final Placement List</li>
-                                <li data-task="p6-t2">Submit list to Faculty Incharge</li>
-                                <li data-task="p6-t3">Submit list to Academic Department</li>
+                           <ul class="space-y-2 list-disc pl-5">
+                                <li>Compile Final Placement List</li>
+                                <li>Submit list to Faculty Incharge</li>
+                                <li>Submit list to Academic Department</li>
                            </ul>
                         </div>
                     </div>
@@ -484,10 +560,175 @@
                     <div class="space-y-4">
                         <div class="bg-black text-white p-4 rounded-lg shadow-md mb-6">
                             <h3 class="font-bold text-lg mb-1 flex items-center"><i data-lucide="award" class="mr-2 text-red-500"></i> Official Coursework Status</h3>
-                            <p class="text-sm opacity-90">Once the process is complete, Live Projects are officially converted to <strong>Project Based Learning (PBL)</strong> coursework carrying <strong>4 Credits</strong>.</p>
+                            <p class="text-sm opacity-90">Once the process is complete, Live Projects are officially converted to <strong>Project Based Learning (PBL)</strong> coursework carrying <strong>4 Credits</strong> for <strong>200 Marks</strong>.</p>
                         </div>
 
-                        <h3 class="text-xl font-bold text-gray-900">10.1 Post-Selection Process</h3>
+                        <h3 class="text-xl font-bold text-gray-900">10.1 Introduction to PBL</h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            The MBA (OM) program structure includes <strong>Project I</strong> and <strong>Project II</strong> in the second and third semesters, respectively. The objective is to allow students to solve real-time problems using newly gained knowledge and faculty mentoring, emphasizing the project's crucial role in higher studies.
+                        </p>
+                        <p class="text-gray-700 leading-relaxed mt-2">
+                            <strong>What must a project have in order to be considered an instance of PBL?</strong> The five criteria are:
+                        </p>
+                        
+                        <div class="grid grid-cols-1 gap-4 mt-4">
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <h4 class="font-bold text-gray-900 mb-2">1. Centrality</h4>
+                                <p class="text-sm text-gray-700">Projects are central to the curriculum, not peripheral. In this context, all projects <strong>MUST pertain to Operations Management</strong>.</p>
+                            </div>
+                            
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <h4 class="font-bold text-gray-900 mb-2">2. Driving Question</h4>
+                                <p class="text-sm text-gray-700">Projects focus on questions or problems that "drive" students to engage with core concepts and principles of a discipline, using problem-solving approaches based on learned skills/techniques.</p>
+                            </div>
+                            
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <h4 class="font-bold text-gray-900 mb-2">3. Constructive Investigations</h4>
+                                <p class="text-sm text-gray-700">An investigation is a goal-directed process involving inquiry, knowledge building, and resolution. This can include design, decision-making, problem-finding, problem-solving, discovery, or model-building.</p>
+                            </div>
+                            
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <h4 class="font-bold text-gray-900 mb-2">4. Autonomy</h4>
+                                <p class="text-sm text-gray-700">Projects are significantly student-driven, not teacher-led, scripted, or packaged. Students lead in conceptualizing, designing, implementing, and reporting project work.</p>
+                            </div>
+                            
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <h4 class="font-bold text-gray-900 mb-2">5. Realism</h4>
+                                <p class="text-sm text-gray-700">Projects are realistic, not scenario-based or academic challenges. They address real-time issues within companies, focusing on authentic problems with potential for implemented solutions.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-bold text-gray-900 mt-8">10.2 Course Outcomes</h3>
+                        <div class="overflow-x-auto mt-4">
+                            <table class="min-w-full text-sm text-left text-gray-500 border rounded-lg">
+                                <thead class="text-xs text-white uppercase bg-red-900">
+                                    <tr>
+                                        <th class="px-6 py-3 border-b border-red-800">Course Outcome (CO)</th>
+                                        <th class="px-6 py-3 border-b border-red-800">CO Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white border-b hover:bg-red-50">
+                                        <td class="px-6 py-4 font-medium text-gray-900">CO 1</td>
+                                        <td class="px-6 py-4">To analyse and define problem.</td>
+                                    </tr>
+                                    <tr class="bg-gray-50 border-b hover:bg-red-50">
+                                        <td class="px-6 py-4 font-medium text-gray-900">CO 2</td>
+                                        <td class="px-6 py-4">To evaluate various aspects of project by stakeholder interaction.</td>
+                                    </tr>
+                                    <tr class="bg-white border-b hover:bg-red-50">
+                                        <td class="px-6 py-4 font-medium text-gray-900">CO 3</td>
+                                        <td class="px-6 py-4">To evaluate various issues related to project planning and scheduling.</td>
+                                    </tr>
+                                    <tr class="bg-gray-50 border-b hover:bg-red-50">
+                                        <td class="px-6 py-4 font-medium text-gray-900">CO 4</td>
+                                        <td class="px-6 py-4">To create project evaluation metrics.</td>
+                                    </tr>
+                                    <tr class="bg-white border-b hover:bg-red-50">
+                                        <td class="px-6 py-4 font-medium text-gray-900">CO 5</td>
+                                        <td class="px-6 py-4">To analyze and categorize the different possibilities of solutions.</td>
+                                    </tr>
+                                    <tr class="bg-gray-50 border-b hover:bg-red-50">
+                                        <td class="px-6 py-4 font-medium text-gray-900">CO 6</td>
+                                        <td class="px-6 py-4">To create and implement most efficient solutions.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3 class="text-xl font-bold text-gray-900 mt-8">10.3 Assessment & Grading</h3>
+                        <p class="text-gray-700 text-sm mb-4">Students who have opted Project I as an elective are expected to complete such projects of 4 credits for 200 marks.</p>
+                        
+                        <div class="space-y-6 mt-4">
+                            <div>
+                                <h4 class="font-bold text-lg text-gray-900 mb-3">1. Internal Assessment (120 Marks)</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full text-sm text-left text-gray-500 border rounded-lg">
+                                        <thead class="text-xs text-white uppercase bg-red-900">
+                                            <tr>
+                                                <th class="px-4 py-3 border-b border-red-800">Component</th>
+                                                <th class="px-4 py-3 border-b border-red-800">Marks</th>
+                                                <th class="px-4 py-3 border-b border-red-800">Details</th>
+                                                <th class="px-4 py-3 border-b border-red-800">Deadline</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="bg-white border-b hover:bg-red-50">
+                                                <td class="px-4 py-3 font-medium text-gray-900">Component no. 1</td>
+                                                <td class="px-4 py-3">10 Marks</td>
+                                                <td class="px-4 py-3">Project Initiation Report (CO1) & Interim Report (CO2) to exams</td>
+                                                <td class="px-4 py-3">23rd December, 2025 & 20th January, 2026</td>
+                                            </tr>
+                                            <tr class="bg-gray-50 border-b hover:bg-red-50">
+                                                <td class="px-4 py-3 font-medium text-gray-900">Component no. 2</td>
+                                                <td class="px-4 py-3">50 Marks</td>
+                                                <td class="px-4 py-3">Interim Presentation & Viva at Institute (CO1, CO2, CO3, CO4, CO5)</td>
+                                                <td class="px-4 py-3">February, 2026</td>
+                                            </tr>
+                                            <tr class="bg-white border-b hover:bg-red-50">
+                                                <td class="px-4 py-3 font-medium text-gray-900">Component no. 3</td>
+                                                <td class="px-4 py-3">30 Marks</td>
+                                                <td class="px-4 py-3">Mid Review-Industry guides feedback to exams (CO3, CO4)</td>
+                                                <td class="px-4 py-3">2nd March, 2026</td>
+                                            </tr>
+                                            <tr class="bg-gray-50 border-b hover:bg-red-50">
+                                                <td class="px-4 py-3 font-medium text-gray-900">Component no. 4</td>
+                                                <td class="px-4 py-3">15 Marks</td>
+                                                <td class="px-4 py-3">Project Report Submission in hard and soft copy with Completion Certificate (CO5, CO6)</td>
+                                                <td class="px-4 py-3">05th March, 2026</td>
+                                            </tr>
+                                            <tr class="bg-white border-b hover:bg-red-50">
+                                                <td class="px-4 py-3 font-medium text-gray-900">Component no. 5</td>
+                                                <td class="px-4 py-3">15 Marks</td>
+                                                <td class="px-4 py-3">Institute Faculty Guide Assessment Marks (CO5, CO6)</td>
+                                                <td class="px-4 py-3">10th March, 2026</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-lg text-gray-900 mb-3">2. External Assessment (80 Marks)</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full text-sm text-left text-gray-500 border rounded-lg">
+                                        <thead class="text-xs text-white uppercase bg-red-900">
+                                            <tr>
+                                                <th class="px-4 py-3 border-b border-red-800">Component</th>
+                                                <th class="px-4 py-3 border-b border-red-800">Marks</th>
+                                                <th class="px-4 py-3 border-b border-red-800">Details</th>
+                                                <th class="px-4 py-3 border-b border-red-800">Deadline</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="bg-white border-b hover:bg-red-50">
+                                                <td class="px-4 py-3 font-medium text-gray-900">Component no. 6</td>
+                                                <td class="px-4 py-3">80 Marks</td>
+                                                <td class="px-4 py-3">Presentations & External Viva by External panelist (CO1, CO2, CO3, CO4, CO5, CO6)</td>
+                                                <td class="px-4 py-3">Dates will be declared later</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2 italic">External evaluation shall be conducted during semester end exam for which schedule will be released in March, 2026.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-bold text-gray-900 mt-8">10.4 Expectations for Mid-Term Review of Live Projects</h3>
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 mt-4 shadow-sm">
+                            <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                                <li>Purpose of the Project/Project charter</li>
+                                <li>Time line of the project</li>
+                                <li>Project progress on problem statement so far</li>
+                                <li>Constraints and difficulties</li>
+                                <li>Specific support required</li>
+                                <li>Learning and insights so far</li>
+                                <li>Gap with respect to time line if any (planned vs actual)</li>
+                                <li>What else could be done in this project?</li>
+                            </ul>
+                        </div>
+
+                        <h3 class="text-xl font-bold text-gray-900 mt-8">10.5 Post-Selection Process</h3>
                         <div class="space-y-3 mt-2">
                              <div class="flex items-start">
                                 <div class="bg-red-100 p-2 rounded mr-3 mt-1"><i data-lucide="megaphone" class="w-4 h-4 text-red-800"></i></div>
@@ -502,20 +743,6 @@
                                     <h4 class="font-bold text-gray-800">Attendance Monitoring</h4>
                                     <p class="text-sm text-gray-600">Attendance logs of students visiting companies are strictly tracked.</p>
                                 </div>
-                            </div>
-                        </div>
-
-                        <h3 class="text-xl font-bold text-gray-900 mt-6">10.2 Evaluation & Grading</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                            <div class="border border-gray-200 p-4 rounded bg-white">
-                                <span class="text-xs font-bold text-red-600 uppercase">Internal</span>
-                                <h4 class="font-bold text-gray-900">Viva & Presentations</h4>
-                                <p class="text-sm text-gray-600 mt-1">Conducted in-between the project duration to track progress.</p>
-                            </div>
-                            <div class="border border-gray-200 p-4 rounded bg-white">
-                                <span class="text-xs font-bold text-red-600 uppercase">External/Interim</span>
-                                <h4 class="font-bold text-gray-900">Final Presentation</h4>
-                                <p class="text-sm text-gray-600 mt-1">Interim and External presentations conducted at the end.</p>
                             </div>
                         </div>
 
@@ -548,8 +775,8 @@
                             </thead>
                             <tbody>
                               <tr class="bg-white border-b hover:bg-red-50">
-                                <td class="px-6 py-4 font-medium text-gray-900">SCC Coordinators</td>
-                                <td class="px-6 py-4">Scouting (Nashik), Floating Forms, Sorting/Selection, Coordination.</td>
+                                <td class="px-6 py-4 font-medium text-gray-900">S2C2 Coordinators</td>
+                                <td class="px-6 py-4">Scouting (Nashik), Floating Forms, Sorting, Coordination.</td>
                               </tr>
                               <tr class="bg-gray-50 border-b hover:bg-red-50">
                                 <td class="px-6 py-4 font-medium text-gray-900">Faculty Incharge</td>
@@ -609,12 +836,12 @@
             {
                 id: '13',
                 title: '13. Escalation Matrix',
-                roles: ['SCC', 'Faculty'],
+                roles: ['S2C2', 'Faculty'],
                 content: `
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 gap-4">
                           <div class="p-4 border rounded-l-4 border-l-green-600 bg-white shadow-sm">
-                             <h4 class="font-bold text-gray-800">Level 1: SCC Coordinator</h4>
+                             <h4 class="font-bold text-gray-800">Level 1: S2C2 Coordinator</h4>
                              <p class="text-sm text-gray-600 mt-1">Student queries, Form issues, Initial company coordination.</p>
                           </div>
                           <div class="p-4 border rounded-l-4 border-l-yellow-500 bg-white shadow-sm">
@@ -628,6 +855,194 @@
                         </div>
                     </div>
                 `
+            },
+            {
+                id: '14',
+                title: '14. Project Dashboard - Batch 2025-2027 (Sem II)',
+                roles: ['All'],
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-red-900 to-red-700 text-white p-6 rounded-lg shadow-lg mb-6">
+                            <h3 class="text-2xl font-bold mb-2 flex items-center">
+                                <i data-lucide="bar-chart-3" class="mr-3 w-6 h-6"></i>
+                                Project - I Dashboard (PBL)
+                            </h3>
+                            <p class="text-red-100">Comprehensive overview of Live Projects for MBA (OM) Batch 2025-2027, Semester II</p>
+                        </div>
+
+                        <!-- Key Metrics -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" id="dashboardMetrics">
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <div class="text-sm text-gray-500 uppercase tracking-wide">Total Companies</div>
+                                <div class="text-3xl font-bold text-gray-900 mt-1" id="metricCompanies">-</div>
+                            </div>
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <div class="text-sm text-gray-500 uppercase tracking-wide">Total Projects</div>
+                                <div class="text-3xl font-bold text-gray-900 mt-1" id="metricProjects">-</div>
+                            </div>
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <div class="text-sm text-gray-500 uppercase tracking-wide">Total Students</div>
+                                <div class="text-3xl font-bold text-gray-900 mt-1" id="metricStudents">-</div>
+                            </div>
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <div class="text-sm text-gray-500 uppercase tracking-wide">Faculty Mentors</div>
+                                <div class="text-3xl font-bold text-gray-900 mt-1" id="metricFaculty">-</div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Row 1 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                    <i data-lucide="pie-chart" class="mr-2 text-red-600 w-5 h-5"></i>
+                                    Projects by Company
+                                </h4>
+                                <canvas id="projectsByCompanyChart"></canvas>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                    <i data-lucide="user-check" class="mr-2 text-red-600 w-5 h-5"></i>
+                                    Faculty Assignments
+                                </h4>
+                                <canvas id="facultyAssignmentsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Charts Row 2 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                    <i data-lucide="users" class="mr-2 text-red-600 w-5 h-5"></i>
+                                    Students per Company
+                                </h4>
+                                <canvas id="studentsPerCompanyChart"></canvas>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                    <i data-lucide="pie-chart" class="mr-2 text-red-600 w-5 h-5"></i>
+                                    Project Type Distribution
+                                </h4>
+                                <canvas id="projectTypeChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Students per Project Chart -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm mb-6">
+                            <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                <i data-lucide="bar-chart-2" class="mr-2 text-red-600 w-5 h-5"></i>
+                                Students per Project
+                            </h4>
+                            <canvas id="studentsPerProjectChart"></canvas>
+                        </div>
+
+                        <!-- Master Data Table -->
+                        <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                            <div class="bg-red-900 text-white p-4">
+                                <h4 class="text-lg font-bold flex items-center">
+                                    <i data-lucide="database" class="mr-2 w-5 h-5"></i>
+                                    Master Data - Project Assignments
+                                </h4>
+                            </div>
+                            
+                            <!-- Desktop Table View -->
+                            <div class="hidden md:block">
+                                <table class="w-full text-sm text-left text-gray-500" id="masterDataTable">
+                                    <thead class="text-xs text-white uppercase bg-red-800">
+                                        <tr>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[15%]">Company</th>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[25%]">Problem Statement</th>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[25%]">Name</th>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[15%]">PRN</th>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[20%]">Faculty Mentor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="masterDataTableBody" class="divide-y divide-gray-200">
+                                        <!-- Data will be injected here -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Mobile Accordion View -->
+                            <div class="md:hidden" id="masterDataMobile">
+                                <!-- Data will be injected here -->
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: '15',
+                title: '15. Important Documents',
+                roles: ['All'],
+                content: `
+                    <div class="space-y-4">
+                        <div class="bg-gradient-to-r from-red-900 to-red-700 text-white p-6 rounded-lg shadow-lg mb-6">
+                            <h3 class="text-2xl font-bold mb-2 flex items-center">
+                                <i data-lucide="folder-open" class="mr-3 w-6 h-6"></i>
+                                Important Documents & Resources
+                            </h3>
+                            <p class="text-red-100">Access important documents, notices, and formats for Live Projects (PBL)</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                                <div class="p-6">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center mb-2">
+                                                <div class="bg-red-100 p-2 rounded mr-3">
+                                                    <i data-lucide="file-text" class="w-5 h-5 text-red-700"></i>
+                                                </div>
+                                                <h4 class="text-lg font-bold text-gray-900">1. MBA 25-27 -II PBL Notice</h4>
+                                            </div>
+                                            <p class="text-sm text-gray-600 ml-12 mb-3">Official notice for Project Based Learning (PBL) for MBA Operations Management Batch 2025-2027, Semester II</p>
+                                            <a href="https://drive.google.com/file/d/1iLTiqSuQnSl0xYzkJHeZqRSDsM3UXkbi/view?usp=sharing" 
+                                               target="_blank" 
+                                               rel="noopener noreferrer"
+                                               class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors ml-12">
+                                                <i data-lucide="external-link" class="w-4 h-4 mr-2"></i>
+                                                Open Document
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                                <div class="p-6">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center mb-2">
+                                                <div class="bg-red-100 p-2 rounded mr-3">
+                                                    <i data-lucide="file-text" class="w-5 h-5 text-red-700"></i>
+                                                </div>
+                                                <h4 class="text-lg font-bold text-gray-900">2. Formats of PBL - MBA OM(25-27) Sem II</h4>
+                                            </div>
+                                            <p class="text-sm text-gray-600 ml-12 mb-3">Required formats and templates for Project Based Learning submissions for MBA Operations Management Batch 2025-2027, Semester II</p>
+                                            <a href="https://drive.google.com/drive/folders/1-1qVNV-rF7jema3tSYB1VNgO1ntzo5FV?usp=sharing" 
+                                               target="_blank" 
+                                               rel="noopener noreferrer"
+                                               class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors ml-12">
+                                                <i data-lucide="external-link" class="w-4 h-4 mr-2"></i>
+                                                Open Directory
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mt-6">
+                            <div class="flex items-start">
+                                <i data-lucide="info" class="w-5 h-5 text-blue-600 mr-3 mt-0.5"></i>
+                                <div>
+                                    <h4 class="font-bold text-blue-900 mb-1">Note</h4>
+                                    <p class="text-sm text-blue-800">All documents are hosted on Google Drive. Make sure you have access permissions. If you encounter any issues accessing the documents, please contact the S2C2 coordinators or Faculty Incharge.</p>
+                                </div>
+                          </div>
+                        </div>
+                    </div>
+                `
             }
         ];
 
@@ -635,7 +1050,6 @@
         let state = {
             activeSection: '1',
             selectedRole: 'All',
-            checklistState: JSON.parse(localStorage.getItem('siom_sop_checklist')) || {},
             searchQuery: ''
         };
 
@@ -696,14 +1110,21 @@
             }
         }
 
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
         function setActiveSection(id) {
             state.activeSection = id;
             renderSidebar();
             renderContent();
             
-            // Close sidebar on mobile after selection
+            // Close sidebar on mobile after selection (only if it's open)
             if(window.innerWidth < 768) {
-                toggleSidebar();
+                closeSidebar();
             }
 
             // Scroll to top
@@ -724,33 +1145,6 @@
             renderContent(); // Render filtered sections
         }
 
-        function toggleChecklist(taskId, element) {
-            // Toggle state
-            state.checklistState[taskId] = !state.checklistState[taskId];
-            
-            // Save to local storage
-            localStorage.setItem('siom_sop_checklist', JSON.stringify(state.checklistState));
-            
-            // UI Update directly for performance
-            const isChecked = state.checklistState[taskId];
-            const checkboxDiv = element.querySelector('.checklist-box');
-            const textSpan = element.querySelector('span');
-
-            if (isChecked) {
-                checkboxDiv.classList.add('bg-red-600', 'border-red-600');
-                checkboxDiv.classList.remove('border-gray-300');
-                checkboxDiv.innerHTML = '<i data-lucide="check" class="text-white w-3 h-3"></i>';
-                textSpan.classList.add('text-gray-400', 'line-through');
-                textSpan.classList.remove('text-gray-700');
-            } else {
-                checkboxDiv.classList.remove('bg-red-600', 'border-red-600');
-                checkboxDiv.classList.add('border-gray-300');
-                checkboxDiv.innerHTML = '';
-                textSpan.classList.remove('text-gray-400', 'line-through');
-                textSpan.classList.add('text-gray-700');
-            }
-            lucide.createIcons();
-        }
 
         function exportToText() {
             // Simple logic to create a text file of the SOP
@@ -789,7 +1183,9 @@
                 btn.className = `w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center justify-between group mb-1 ${isActive ? 'bg-red-50 text-red-700 font-medium' : 'text-gray-600 hover:bg-red-50'} ${!isRelevant ? 'opacity-50' : ''}`;
                 btn.onclick = () => setActiveSection(section.id);
                 
-                let html = `<span class="truncate">${section.title}</span>`;
+                // Use shorter title for section 14 in sidebar
+                const displayTitle = section.id === '14' ? '14. Batch 25-27 PBL Dashboard' : section.title;
+                let html = `<span class="truncate">${displayTitle}</span>`;
                 if (isRelevant && state.selectedRole !== 'All') {
                     html += `<span class="w-2 h-2 rounded-full bg-red-500"></span>`;
                 }
@@ -876,25 +1272,13 @@
                 // Append to container
                 contentContainer.appendChild(sectionDiv);
                 
-                // Post-process: Convert list items with data-task to interactive elements
-                const tasks = sectionDiv.querySelectorAll('li[data-task]');
-                tasks.forEach(li => {
-                    const taskId = li.getAttribute('data-task');
-                    const isChecked = state.checklistState[taskId];
-                    const text = li.innerHTML;
-                    
-                    li.className = "flex items-start p-2 hover:bg-gray-50 rounded transition-colors group cursor-pointer checklist-item";
-                    li.innerHTML = `
-                        <div class="checklist-box mt-1 mr-3 flex-shrink-0 w-5 h-5 border-2 rounded flex items-center justify-center transition-colors ${isChecked ? 'bg-red-600 border-red-600' : 'border-gray-300 group-hover:border-red-400'}">
-                            ${isChecked ? '<i data-lucide="check" class="text-white w-3 h-3"></i>' : ''}
-                        </div>
-                        <span class="${isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}">${text}</span>
-                    `;
-                    li.onclick = (e) => {
-                        e.stopPropagation(); // Prevent bubbling issues
-                        toggleChecklist(taskId, li);
-                    };
-                });
+                // Initialize dashboard if section 14
+                if (section.id === '14') {
+                    setTimeout(() => {
+                        initDashboardCharts();
+                        populateMasterDataTable();
+                    }, 100);
+                }
             });
 
             lucide.createIcons();
@@ -906,6 +1290,392 @@
                 section.title.toLowerCase().includes(state.searchQuery) || 
                 section.content.toLowerCase().includes(state.searchQuery)
             );
+        }
+
+        // --- DASHBOARD DATA & FUNCTIONS ---
+        const dashboardData = {
+            projects: [
+                { company: 'JBM Auto Ltd.', project: 'SOP & Chart Development', students: [
+                    { name: 'Chinmay Jitendra Khanolkar', prn: '25020741026' },
+                    { name: 'Abhijeet Jaydeo Dhanawade', prn: '25020741018' },
+                    { name: 'Ajay Pramod Joshi', prn: '25020741024' }
+                ], faculty: 'Dr. Tarun Kanade', category: 'SOP / Documentation' },
+                { company: 'JBM Auto Ltd.', project: 'MIS Dashboard Creation', students: [
+                    { name: 'Samriddha Basu', prn: '25020741055' },
+                    { name: 'Subhranil Paul', prn: '25020741065' },
+                    { name: 'Ritik Bhatia', prn: '25020741114' }
+                ], faculty: 'Dr. Vardhan Chaubey', category: 'Dashboards / MIS' },
+                { company: 'Genext Precision Autotech', project: 'RCA of Tooth Chamfer Missing', students: [
+                    { name: 'Vitthal Pol', prn: '25020741132' },
+                    { name: 'Nikhil Malalikar', prn: '25020741036' },
+                    { name: 'Girish Pandey', prn: '25020741087' }
+                ], faculty: 'Dr. Madan Jagtap', category: 'RCA / Quality' },
+                { company: 'Genext Precision Autotech', project: 'Preparation of SOP', students: [
+                    { name: 'Siddhi Sharad Jadhav', prn: '25020741121' },
+                    { name: 'Dhiraj Badshe', prn: '25020741077' },
+                    { name: 'Anup Chandak', prn: '25020741071' }
+                ], faculty: 'Dr. Tarun Kanade', category: 'SOP / Documentation' },
+                { company: 'Genext Precision Autotech', project: 'Reduction of Rework', students: [
+                    { name: 'Snehanshu Sunil Somkuwar', prn: '25020741124' },
+                    { name: 'Omkar Devadiga', prn: '25020741017' },
+                    { name: 'Prince Saroha', prn: '25020741044' }
+                ], faculty: 'Dr. Sandeep Gupta', category: 'Process Optimization (I + II)' },
+                { company: 'PMEA Pvt. Ltd.', project: 'Customer-Based Capacity Dashboard Project', students: [
+                    { name: 'Vaibhav Sharma', prn: '25020741130' },
+                    { name: 'Sohan Shailendra Nageshkar', prn: '25020741104' },
+                    { name: 'Ayanava Debnath', prn: '25020741076' }
+                ], faculty: 'Dr. Vardhan Chaubey', category: 'Dashboards / MIS' },
+                { company: 'PMEA Pvt. Ltd.', project: 'New Plant Layout Optimization', students: [
+                    { name: 'Arpan Shivam Raliha', prn: '25020741073' },
+                    { name: 'Sneha Rajeshkumar Srivastava', prn: '25020741127' },
+                    { name: 'Vinay Vilas Shinde', prn: '25020741117' }
+                ], faculty: 'Dr. Pradeep Behra', category: 'Layout Optimization' },
+                { company: 'PMEA Pvt. Ltd.', project: 'Stock Handover Quantity Discrepancy', students: [
+                    { name: 'Ayush Hans Shrivastava', prn: '25020741008' },
+                    { name: 'Prajwal Rajesh Bhagwat', prn: '25020741099' },
+                    { name: 'Jenil Shah', prn: '25020741033' }
+                ], faculty: 'Dr. Sandeep Sharda', category: 'Dashboards / MIS' },
+                { company: 'Supreme Technocrats Pvt. Ltd.', project: 'Value Stream Mapping', students: [
+                    { name: 'Mohit Purshottam Kannjariya', prn: '25020741092' },
+                    { name: 'Shashank Dixit', prn: '25020741058' },
+                    { name: 'Tirth Patel', prn: '25020741141' }
+                ], faculty: 'Dr. Sandeep Gupta', category: 'Value Stream Mapping' },
+                { company: 'Supreme Technocrats Pvt. Ltd.', project: 'Inventory / Process Dashboard', students: [
+                    { name: 'Tushit Waghamare', prn: '25020741138' },
+                    { name: 'Isha Dilip Lagad', prn: '25020741023' },
+                    { name: 'Raghavendar R', prn: '25020741110' }
+                ], faculty: 'Dr. Sandeep Sharda', category: 'Dashboards / MIS' },
+                { company: 'NSK Industries', project: 'SOP / Manual Creation', students: [
+                    { name: 'Priya Nerlikar', prn: '25020741035' },
+                    { name: 'Piyush Chhatre', prn: '25020741013' },
+                    { name: 'Ajaykumar Manjarikar', prn: '25020741098' }
+                ], faculty: 'Dr. Tarun Kanade', category: 'SOP / Documentation' },
+                { company: 'NSK Industries', project: 'Plant / Process Layout Optimization', students: [
+                    { name: 'Chinmay Ajay Shah', prn: '25020741081' },
+                    { name: 'Satya Prakash', prn: '25020741116' },
+                    { name: 'Jayesh Patil', prn: '25020741107' }
+                ], faculty: 'Dr. Pradeep Behra', category: 'Layout Optimization' },
+                { company: 'Prathamesh', project: 'SOP Creation', students: [
+                    { name: 'Hrishikesh Deepak Patil', prn: '25020741022' },
+                    { name: 'Nayan Jitendra Bhalerao', prn: '25020741034' },
+                    { name: 'Devashish Gupta', prn: '25020741084' }
+                ], faculty: 'Dr. Kirti Nayal', category: 'SOP / Documentation' },
+                { company: 'Prathamesh', project: 'IATF Documentation', students: [
+                    { name: 'Pranav Roy', prn: '25020741043' },
+                    { name: 'Trilok Kumar', prn: '25020741091' },
+                    { name: 'Ramkumar S', prn: '25020741111' }
+                ], faculty: 'Dr. Sandeep Gupta', category: 'SOP / Documentation' },
+                { company: 'Samtech', project: 'Process Optimization – I', students: [
+                    { name: 'Guruvira Singh', prn: '25020741002' },
+                    { name: 'Shivam Raj Singh', prn: '25020741060' },
+                    { name: 'Deep Ghosh', prn: '25020741082' }
+                ], faculty: 'Dr. Deepak Nirmal', category: 'Process Optimization (I + II)' },
+                { company: 'Samtech', project: 'Process Optimization – II', students: [
+                    { name: 'Shruti Vasudevan Iyer', prn: '25020741062' },
+                    { name: 'Shubham Bankar', prn: '25020741010' },
+                    { name: 'Devesh Tiwari', prn: '25020741085' }
+                ], faculty: 'Dr. Deepak Nirmal', category: 'Process Optimization (I + II)' },
+                { company: 'Caprihans', project: 'Packaging Automation', students: [
+                    { name: 'Aayush Kapoor', prn: '25020741140' },
+                    { name: 'Rahul Boddu', prn: '25020741012' },
+                    { name: 'Ritesh Rajesh Mule', prn: '25020741113' },
+                    { name: 'Shreyash Dwivedi', prn: '25020741118' }
+                ], faculty: 'Dr. Deepak Nirmal', category: 'Automation' }
+            ]
+        };
+
+        function getDashboardStats() {
+            const companies = [...new Set(dashboardData.projects.map(p => p.company))];
+            const projectTypes = {};
+            const companyProjects = {};
+            const companyStudents = {};
+            const projectStudents = {};
+            const facultyProjects = {};
+            const facultyCounts = {};
+
+            dashboardData.projects.forEach(proj => {
+                // Project types
+                projectTypes[proj.category] = (projectTypes[proj.category] || 0) + 1;
+                
+                // Company projects
+                companyProjects[proj.company] = (companyProjects[proj.company] || 0) + 1;
+                
+                // Company students
+                companyStudents[proj.company] = (companyStudents[proj.company] || 0) + proj.students.length;
+                
+                // Project students
+                projectStudents[proj.project] = proj.students.length;
+                
+                // Faculty assignments
+                facultyProjects[proj.faculty] = (facultyProjects[proj.faculty] || 0) + 1;
+                facultyCounts[proj.faculty] = (facultyCounts[proj.faculty] || 0) + proj.students.length;
+            });
+
+            return {
+                companies,
+                projectTypes,
+                companyProjects,
+                companyStudents,
+                projectStudents,
+                facultyProjects,
+                facultyCounts
+            };
+        }
+
+        function initDashboardCharts() {
+            const stats = getDashboardStats();
+            const colors = ['#991b1b', '#dc2626', '#ef4444', '#f87171', '#fca5a5', '#fecaca', '#fee2e2', '#fef2f2'];
+            const darkColors = ['#7f1d1d', '#991b1b', '#b91c1c', '#dc2626', '#ef4444', '#f87171', '#fca5a5', '#fecaca'];
+
+            // Update metrics
+            const totalStudents = dashboardData.projects.reduce((sum, p) => sum + p.students.length, 0);
+            const uniqueFaculty = [...new Set(dashboardData.projects.map(p => p.faculty))];
+            document.getElementById('metricCompanies').textContent = stats.companies.length;
+            document.getElementById('metricProjects').textContent = dashboardData.projects.length;
+            document.getElementById('metricStudents').textContent = totalStudents;
+            document.getElementById('metricFaculty').textContent = uniqueFaculty.length;
+
+            // Projects by Company Chart
+            const projectsByCompanyCtx = document.getElementById('projectsByCompanyChart');
+            if (projectsByCompanyCtx) {
+                new Chart(projectsByCompanyCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(stats.companyProjects),
+                        datasets: [{
+                            data: Object.values(stats.companyProjects),
+                            backgroundColor: colors.slice(0, Object.keys(stats.companyProjects).length),
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { padding: 10, font: { size: 11 } } }
+                        }
+                    }
+                });
+            }
+
+            // Faculty Assignments Chart
+            const facultyAssignmentsCtx = document.getElementById('facultyAssignmentsChart');
+            if (facultyAssignmentsCtx) {
+                new Chart(facultyAssignmentsCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(stats.facultyProjects),
+                        datasets: [{
+                            data: Object.values(stats.facultyProjects),
+                            backgroundColor: colors.slice(0, Object.keys(stats.facultyProjects).length),
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { padding: 10, font: { size: 11 } } }
+                        }
+                    }
+                });
+            }
+
+            // Students per Company Chart
+            const studentsPerCompanyCtx = document.getElementById('studentsPerCompanyChart');
+            if (studentsPerCompanyCtx) {
+                new Chart(studentsPerCompanyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(stats.companyStudents),
+                        datasets: [{
+                            label: 'Students',
+                            data: Object.values(stats.companyStudents),
+                            backgroundColor: '#991b1b',
+                            borderColor: '#7f1d1d',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                            x: {
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    font: { size: 10 },
+                                    padding: 5
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            // Project Type Distribution Chart
+            const projectTypeCtx = document.getElementById('projectTypeChart');
+            if (projectTypeCtx) {
+                new Chart(projectTypeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(stats.projectTypes),
+                        datasets: [{
+                            label: 'Number of Projects',
+                            data: Object.values(stats.projectTypes),
+                            backgroundColor: '#dc2626',
+                            borderColor: '#991b1b',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        indexAxis: 'y',
+                        scales: {
+                            x: { beginAtZero: true, ticks: { stepSize: 1 } }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            // Students per Project Chart
+            const studentsPerProjectCtx = document.getElementById('studentsPerProjectChart');
+            if (studentsPerProjectCtx) {
+                new Chart(studentsPerProjectCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(stats.projectStudents),
+                        datasets: [{
+                            label: 'Number of Students',
+                            data: Object.values(stats.projectStudents),
+                            backgroundColor: '#dc2626',
+                            borderColor: '#991b1b',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        indexAxis: 'y',
+                        scales: {
+                            x: { beginAtZero: true, ticks: { stepSize: 1 } }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+        }
+
+        function populateMasterDataTable() {
+            const tbody = document.getElementById('masterDataTableBody');
+            const mobileContainer = document.getElementById('masterDataMobile');
+            if (!tbody || !mobileContainer) return;
+
+            // Clear existing content
+            tbody.innerHTML = '';
+            mobileContainer.innerHTML = '';
+
+            // Group projects by company
+            const companyGroups = {};
+            dashboardData.projects.forEach(proj => {
+                if (!companyGroups[proj.company]) {
+                    companyGroups[proj.company] = [];
+                }
+                companyGroups[proj.company].push(proj);
+            });
+
+            // Populate Desktop Table
+            Object.keys(companyGroups).forEach(company => {
+                companyGroups[company].forEach((proj, projIdx) => {
+                    proj.students.forEach((student, studentIdx) => {
+                        const row = document.createElement('tr');
+                        const isFirstRow = projIdx === 0 && studentIdx === 0;
+                        row.className = studentIdx % 2 === 0 ? 'bg-white hover:bg-red-50 transition-colors' : 'bg-gray-50 hover:bg-red-50 transition-colors';
+                        
+                        const companyCell = isFirstRow 
+                            ? `<td class="px-3 py-2 font-semibold text-gray-900 align-top text-xs" rowspan="${companyGroups[company].reduce((sum, p) => sum + p.students.length, 0)}">${company}</td>`
+                            : '';
+                        
+                        const projectCell = studentIdx === 0
+                            ? `<td class="px-3 py-2 text-gray-700 align-top text-xs" rowspan="${proj.students.length}">${proj.project}</td>`
+                            : '';
+                        
+                        const facultyCell = studentIdx === 0
+                            ? `<td class="px-3 py-2 text-gray-600 text-xs align-top" rowspan="${proj.students.length}">${proj.faculty}</td>`
+                            : '';
+
+                        row.innerHTML = `
+                            ${companyCell}
+                            ${projectCell}
+                            <td class="px-3 py-2 text-gray-900 text-xs">${student.name}</td>
+                            <td class="px-3 py-2 text-gray-600 font-mono text-xs">${student.prn}</td>
+                            ${facultyCell}
+                        `;
+                        tbody.appendChild(row);
+                    });
+                });
+            });
+
+            // Populate Mobile Accordion
+            Object.keys(companyGroups).forEach((company, companyIdx) => {
+                const companyDiv = document.createElement('div');
+                companyDiv.className = 'border-b border-gray-200';
+                companyDiv.innerHTML = `
+                    <button onclick="toggleCompanyAccordion('company-${companyIdx}')" 
+                            class="w-full px-4 py-3 bg-red-50 hover:bg-red-100 flex items-center justify-between text-left transition-colors">
+                        <div class="flex items-center">
+                            <i data-lucide="chevron-down" class="w-4 h-4 mr-2 text-red-700 transform transition-transform" id="icon-company-${companyIdx}"></i>
+                            <span class="font-semibold text-gray-900">${company}</span>
+                            <span class="ml-2 text-xs text-gray-500">(${companyGroups[company].reduce((sum, p) => sum + p.students.length, 0)} students)</span>
+                        </div>
+                    </button>
+                    <div id="company-${companyIdx}" class="hidden">
+                        ${companyGroups[company].map((proj, projIdx) => `
+                            <div class="border-t border-gray-100 ${projIdx > 0 ? 'mt-2' : ''}">
+                                <div class="px-4 py-2 bg-gray-50">
+                                    <div class="text-sm font-medium text-gray-700">${proj.project}</div>
+                                    <div class="text-xs text-gray-500 mt-1">${proj.faculty}</div>
+                                </div>
+                                <div class="px-4 py-2 space-y-2">
+                                    ${proj.students.map(student => `
+                                        <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                                            <div class="flex-1">
+                                                <div class="text-sm font-medium text-gray-900">${student.name}</div>
+                                                <div class="text-xs text-gray-500 font-mono mt-0.5">${student.prn}</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                mobileContainer.appendChild(companyDiv);
+            });
+
+            // Initialize icons
+            lucide.createIcons();
+        }
+
+        function toggleCompanyAccordion(companyId) {
+            const content = document.getElementById(companyId);
+            const icon = document.getElementById(`icon-${companyId}`);
+            if (content && icon) {
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            }
         }
 
         // Initialize on Load
