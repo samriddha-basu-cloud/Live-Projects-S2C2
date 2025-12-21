@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIOM Live Projects SOP - Interactive Document</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="S2C2 Logo.png">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1083,12 +1086,29 @@
         `;
 
         function init() {
+            // 🔹 Restore last active section (if exists)
+            const savedSection = localStorage.getItem('activeSection');
+            if (savedSection) {
+                state.activeSection = savedSection;
+            }
+
+            const savedRole = localStorage.getItem('selectedRole');
+            if (savedRole) {
+                state.selectedRole = savedRole;
+                document.getElementById('role-selector').value = savedRole;
+            }
+
+            const savedSearch = localStorage.getItem('searchQuery');
+            if (savedSearch) {
+                state.searchQuery = savedSearch;
+                document.getElementById('search-input').value = savedSearch;
+            }
+
             renderSidebar();
             renderContent();
             lucide.createIcons();
             
-            // Check window size for initial sidebar state
-            if(window.innerWidth < 768) {
+            if (window.innerWidth < 768) {
                 document.getElementById('sidebar').classList.add('-translate-x-full');
             }
         }
@@ -1122,8 +1142,11 @@
             renderSidebar();
             renderContent();
             
+            // 🔹 Save active section to localStorage
+            localStorage.setItem('activeSection', id);
+            
             // Close sidebar on mobile after selection (only if it's open)
-            if(window.innerWidth < 768) {
+            if (window.innerWidth < 768) {
                 closeSidebar();
             }
 
@@ -1134,15 +1157,21 @@
         function updateRole() {
             const selector = document.getElementById('role-selector');
             state.selectedRole = selector.value;
+
+            localStorage.setItem('selectedRole', state.selectedRole);
+
             renderSidebar();
-            renderContent(); // Re-render content to show highlights
+            renderContent();
         }
 
         function handleSearch() {
             const input = document.getElementById('search-input');
             state.searchQuery = input.value.toLowerCase();
-            renderSidebar(); // Update sidebar to filter links
-            renderContent(); // Render filtered sections
+
+            localStorage.setItem('searchQuery', state.searchQuery);
+
+            renderSidebar();
+            renderContent();
         }
 
 
