@@ -868,7 +868,7 @@
                         <div class="bg-gradient-to-r from-red-900 to-red-700 text-white p-6 rounded-lg shadow-lg mb-6">
                             <h3 class="text-2xl font-bold mb-2 flex items-center">
                                 <i data-lucide="bar-chart-3" class="mr-3 w-6 h-6"></i>
-                                Project - I Dashboard (PBL)
+                                Project - I Dashboard (PBL) - MBA(OM)
                             </h3>
                             <p class="text-red-100">Comprehensive overview of Live Projects for MBA (OM) Batch 2025-2027, Semester II</p>
                         </div>
@@ -943,7 +943,7 @@
                             <div class="bg-red-900 text-white p-4">
                                 <h4 class="text-lg font-bold flex items-center">
                                     <i data-lucide="database" class="mr-2 w-5 h-5"></i>
-                                    Master Data - Project Assignments
+                                    Master Data - Project Assignments (OM)
                                 </h4>
                             </div>
                             
@@ -971,6 +971,99 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="border-t-4 border-dashed border-gray-300 my-12 relative">
+                            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-50 px-4 text-gray-400 font-bold tracking-widest"> AOM BATCH </span>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-red-900 to-red-700 text-white p-6 rounded-lg shadow-lg mb-6">
+                            <h3 class="text-2xl font-bold mb-2 flex items-center">
+                                <i data-lucide="bar-chart-3" class="mr-3 w-6 h-6"></i>
+                                Project - I Dashboard (PBL) - MBA (AOM)
+                            </h3>
+                            <p class="text-red-100">Comprehensive overview of Live Projects for MBA (Agri-Operations Management) Batch 2025-2027, Semester II</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" id="dashboardMetricsAOM">
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <div class="text-sm text-gray-500 uppercase tracking-wide">Total Companies</div>
+                                <div class="text-3xl font-bold text-gray-900 mt-1" id="metricCompaniesAOM">-</div>
+                            </div>
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <div class="text-sm text-gray-500 uppercase tracking-wide">Total Projects</div>
+                                <div class="text-3xl font-bold text-gray-900 mt-1" id="metricProjectsAOM">-</div>
+                            </div>
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <div class="text-sm text-gray-500 uppercase tracking-wide">Total Students</div>
+                                <div class="text-3xl font-bold text-gray-900 mt-1" id="metricStudentsAOM">-</div>
+                            </div>
+                            <div class="bg-white border-l-4 border-red-600 p-4 rounded shadow-sm">
+                                <div class="text-sm text-gray-500 uppercase tracking-wide">Faculty Mentors</div>
+                                <div class="text-3xl font-bold text-gray-900 mt-1" id="metricFacultyAOM">-</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                    <i data-lucide="pie-chart" class="mr-2 text-red-600 w-5 h-5"></i>
+                                    Projects by Company (AOM)
+                                </h4>
+                                <canvas id="projectsByCompanyChartAOM"></canvas>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                    <i data-lucide="user-check" class="mr-2 text-red-600 w-5 h-5"></i>
+                                    Faculty Assignments (AOM)
+                                </h4>
+                                <canvas id="facultyAssignmentsChartAOM"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                    <i data-lucide="users" class="mr-2 text-red-600 w-5 h-5"></i>
+                                    Students per Company (AOM)
+                                </h4>
+                                <canvas id="studentsPerCompanyChartAOM"></canvas>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                                <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                    <i data-lucide="pie-chart" class="mr-2 text-red-600 w-5 h-5"></i>
+                                    Project Type Distribution (AOM)
+                                </h4>
+                                <canvas id="projectTypeChartAOM"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden mb-12">
+                            <div class="bg-red-900 text-white p-4">
+                                <h4 class="text-lg font-bold flex items-center">
+                                    <i data-lucide="database" class="mr-2 w-5 h-5"></i>
+                                    Master Data - Project Assignments (AOM)
+                                </h4>
+                            </div>
+                            
+                            <div class="hidden md:block">
+                                <table class="w-full text-sm text-left text-gray-500" id="masterDataTableAOM">
+                                    <thead class="text-xs text-white uppercase bg-red-800">
+                                        <tr>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[15%]">Company</th>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[25%]">Problem Statement</th>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[25%]">Name</th>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[15%]">PRN</th>
+                                            <th class="px-3 py-2.5 border-b border-red-700 font-semibold w-[20%]">Faculty Mentor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="masterDataTableBodyAOM" class="divide-y divide-gray-200">
+                                        </tbody>
+                                </table>
+                            </div>
+
+                            <div class="md:hidden" id="masterDataMobileAOM">
+                                </div>
+                        </div>
                 `
             },
             {
@@ -1304,8 +1397,13 @@
                 // Initialize dashboard if section 14
                 if (section.id === '14') {
                     setTimeout(() => {
+                        // Initialize OM Dashboard (Existing)
                         initDashboardCharts();
                         populateMasterDataTable();
+
+                        // Initialize AOM Dashboard (NEW)
+                        initDashboardChartsAOM();
+                        populateMasterDataTableAOM();
                     }, 100);
                 }
             });
@@ -1413,6 +1511,83 @@
             ]
         };
 
+        const dashboardDataAOM = {
+            projects: [
+                { 
+                    company: 'DMastru', 
+                    project: 'Innovative Marketing for Awareness of ZED Certification Sales', 
+                    students: [
+                        { name: 'Kiran Kumar', prn: '25020742003' },
+                        { name: 'Nikita Singh', prn: '25020742011' }
+                    ], 
+                    faculty: 'Dr. Tarun Kanade', 
+                    category: 'Marketing / Sales' 
+                },
+                { 
+                    company: 'DMastru', 
+                    project: 'Strategic Process Audit and Efficiency Streamlining (Core Ops)', 
+                    students: [
+                        { name: 'Pranay Patil', prn: '25020742010' },
+                        { name: 'Neha Yadav', prn: '25020742012' },
+                        { name: 'Abhishek Vadrale', prn: '25020742013' },
+                        { name: 'Bhavana Reddy', prn: '25020742018' }
+                    ], 
+                    faculty: 'Dr. Pradeep Behera', 
+                    category: 'Process Optimization' 
+                },
+                { 
+                    company: 'Anichetas', 
+                    project: 'Innovative Marketing for Agri Commodities Sales', 
+                    students: [
+                        { name: 'Tukaram Gawade', prn: '25020742015' },
+                        { name: 'Samritha Nath', prn: '25020742017' }
+                    ], 
+                    faculty: 'Dr. Asha Sharma', 
+                    category: 'Marketing / Sales' 
+                },
+                { 
+                    company: 'Proximal SoilSens', 
+                    project: 'Business Model & DaaS Framework for Rural Access', 
+                    students: [
+                        { name: 'Sudhanshu Deshmukh', prn: '25020742007' },
+                        { name: 'Kartik Sabarwal', prn: '25020742016' }
+                    ], 
+                    faculty: 'Dr. Rahul Wadghane', 
+                    category: 'Business Strategy' 
+                },
+                { 
+                    company: 'Proximal SoilSens', 
+                    project: 'Value Chain Assessment and Storytelling-Led Farmer Engagement', 
+                    students: [
+                        { name: 'Ritesh Jagtap', prn: '25020742004' },
+                        { name: 'Gaurav Gawande', prn: '25020742006' }
+                    ], 
+                    faculty: 'Dr. Isha Sharma', 
+                    category: 'Value Chain Analysis' 
+                },
+                { 
+                    company: 'Proximal SoilSens', 
+                    project: 'Stakeholder Mapping and Collaboration Strategy', 
+                    students: [
+                        { name: 'Samar Sadique', prn: '25020742004' }, // Note: PRN duplicated in source from Ritesh, maintained as is
+                        { name: 'Ramakrishna', prn: '25020742014' }
+                    ], 
+                    faculty: 'Dr. Sandeep Gupta', 
+                    category: 'Business Strategy' 
+                },
+                { 
+                    company: 'KriSHE Carbon', 
+                    project: 'Designing Scalable SOPs for Climate-Entrepreneur Onboarding', 
+                    students: [
+                        { name: 'Akhil Srivastav', prn: '25020742001' },
+                        { name: 'Aman Singh', prn: '25020742002' }
+                    ], 
+                    faculty: 'Dr. Rahul Wadghane', 
+                    category: 'SOP / Documentation' 
+                }
+            ]
+        };
+       
         function getDashboardStats() {
             const companies = [...new Set(dashboardData.projects.map(p => p.company))];
             const projectTypes = {};
@@ -1605,6 +1780,176 @@
                     }
                 });
             }
+        }
+
+        function getDashboardStatsAOM() {
+            const companies = [...new Set(dashboardDataAOM.projects.map(p => p.company))];
+            const projectTypes = {};
+            const companyProjects = {};
+            const companyStudents = {};
+            const facultyProjects = {};
+            
+            dashboardDataAOM.projects.forEach(proj => {
+                projectTypes[proj.category] = (projectTypes[proj.category] || 0) + 1;
+                companyProjects[proj.company] = (companyProjects[proj.company] || 0) + 1;
+                companyStudents[proj.company] = (companyStudents[proj.company] || 0) + proj.students.length;
+                facultyProjects[proj.faculty] = (facultyProjects[proj.faculty] || 0) + 1;
+            });
+
+            return { companies, projectTypes, companyProjects, companyStudents, facultyProjects };
+        }
+
+        function initDashboardChartsAOM() {
+            const stats = getDashboardStatsAOM();
+            const colors = ['#991b1b', '#dc2626', '#ef4444', '#f87171', '#fca5a5'];
+
+            // Metrics
+            const totalStudents = dashboardDataAOM.projects.reduce((sum, p) => sum + p.students.length, 0);
+            const uniqueFaculty = [...new Set(dashboardDataAOM.projects.map(p => p.faculty))];
+            
+            document.getElementById('metricCompaniesAOM').textContent = stats.companies.length;
+            document.getElementById('metricProjectsAOM').textContent = dashboardDataAOM.projects.length;
+            document.getElementById('metricStudentsAOM').textContent = totalStudents;
+            document.getElementById('metricFacultyAOM').textContent = uniqueFaculty.length;
+
+            // Chart 1: Projects by Company
+            new Chart(document.getElementById('projectsByCompanyChartAOM'), {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(stats.companyProjects),
+                    datasets: [{
+                        data: Object.values(stats.companyProjects),
+                        backgroundColor: colors,
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Chart 2: Faculty Assignments
+            new Chart(document.getElementById('facultyAssignmentsChartAOM'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(stats.facultyProjects),
+                    datasets: [{
+                        data: Object.values(stats.facultyProjects),
+                        backgroundColor: colors,
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // Chart 3: Students per Company
+            new Chart(document.getElementById('studentsPerCompanyChartAOM'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(stats.companyStudents),
+                    datasets: [{
+                        label: 'Students',
+                        data: Object.values(stats.companyStudents),
+                        backgroundColor: '#991b1b',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Chart 4: Project Types
+            new Chart(document.getElementById('projectTypeChartAOM'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(stats.projectTypes),
+                    datasets: [{
+                        label: 'Projects',
+                        data: Object.values(stats.projectTypes),
+                        backgroundColor: '#dc2626',
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function populateMasterDataTableAOM() {
+            const tbody = document.getElementById('masterDataTableBodyAOM');
+            const mobileContainer = document.getElementById('masterDataMobileAOM');
+            if (!tbody || !mobileContainer) return;
+
+            tbody.innerHTML = '';
+            mobileContainer.innerHTML = '';
+
+            const companyGroups = {};
+            dashboardDataAOM.projects.forEach(proj => {
+                if (!companyGroups[proj.company]) companyGroups[proj.company] = [];
+                companyGroups[proj.company].push(proj);
+            });
+
+            // Desktop Table
+            Object.keys(companyGroups).forEach(company => {
+                companyGroups[company].forEach((proj, projIdx) => {
+                    proj.students.forEach((student, studentIdx) => {
+                        const row = document.createElement('tr');
+                        const isFirstRow = projIdx === 0 && studentIdx === 0;
+                        row.className = studentIdx % 2 === 0 ? 'bg-white hover:bg-red-50' : 'bg-gray-50 hover:bg-red-50';
+                        
+                        const companyCell = isFirstRow 
+                            ? `<td class="px-3 py-2 font-semibold text-gray-900 align-top text-xs" rowspan="${companyGroups[company].reduce((sum, p) => sum + p.students.length, 0)}">${company}</td>`
+                            : '';
+                        
+                        const projectCell = studentIdx === 0
+                            ? `<td class="px-3 py-2 text-gray-700 align-top text-xs" rowspan="${proj.students.length}">${proj.project}</td>`
+                            : '';
+                        
+                        const facultyCell = studentIdx === 0
+                            ? `<td class="px-3 py-2 text-gray-600 text-xs align-top" rowspan="${proj.students.length}">${proj.faculty}</td>`
+                            : '';
+
+                        row.innerHTML = `${companyCell}${projectCell}<td class="px-3 py-2 text-gray-900 text-xs">${student.name}</td><td class="px-3 py-2 text-gray-600 font-mono text-xs">${student.prn}</td>${facultyCell}`;
+                        tbody.appendChild(row);
+                    });
+                });
+            });
+
+            // Mobile Accordion
+            Object.keys(companyGroups).forEach((company, idx) => {
+                const div = document.createElement('div');
+                div.className = 'border-b border-gray-200';
+                div.innerHTML = `
+                    <button onclick="document.getElementById('aom-comp-${idx}').classList.toggle('hidden')" class="w-full px-4 py-3 bg-red-50 flex items-center justify-between">
+                        <span class="font-semibold text-gray-900">${company}</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-red-700"></i>
+                    </button>
+                    <div id="aom-comp-${idx}" class="hidden">
+                        ${companyGroups[company].map(proj => `
+                            <div class="border-t border-gray-100 p-4">
+                                <div class="text-sm font-bold text-red-800 mb-2">${proj.project}</div>
+                                <div class="space-y-2">
+                                    ${proj.students.map(s => `<div class="flex justify-between text-sm"><span class="text-gray-900">${s.name}</span><span class="text-gray-500 text-xs">${s.prn}</span></div>`).join('')}
+                                </div>
+                                <div class="mt-2 text-xs text-gray-500 italic">Mentor: ${proj.faculty}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                mobileContainer.appendChild(div);
+            });
+            lucide.createIcons();
         }
 
         function populateMasterDataTable() {
